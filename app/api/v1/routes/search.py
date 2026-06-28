@@ -1,21 +1,15 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.api.deps import db_dep
+from app.services.topic_service import list_topics, fetch_topic
 
 router = APIRouter()
 
-class SearchRequest(BaseModel):
-    query: str
-    exam_id: str
-    mode: str = "hybrid"
+@router.get("/topics/{subject_id}")
+def topics(subject_id: str, db: Session = Depends(db_dep)):
+    return list_topics(db, subject_id)
 
-@router.post("/")
-def search(req: SearchRequest):
-    return {
-        "query": req.query,
-        "results": {
-            "topics": [],
-            "pyqs": [],
-            "concepts": []
-        },
-        "mode": req.mode
-    }
+@router.get("/topic/{topic_id}")
+def topic(topic_id: str, db: Session = Depends(db_dep)):
+    return fetch_topic(db, topic_id)
