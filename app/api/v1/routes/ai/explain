@@ -1,0 +1,6 @@
+@router.post("/explain")
+def explain(payload: dict):
+    return {
+        "explanation": "Structured explanation based on syllabus + PYQs",
+        "level": payload.get("level", "basic")
+    }
